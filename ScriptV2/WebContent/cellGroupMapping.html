@@ -1,0 +1,357 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="utf-8">
+    <meta name="Keywords" content="">
+    <meta name="Description" content="">
+    <meta name="Author" content="Yuance">
+    <meta name="Copyright" content="">
+    <title>Cell Group Mapping</title>
+    <style type="text/css">
+        body,dl,dd,dt,p,h1,h2,h3,h4,h5,h6{ margin: 0;}
+        ul,ol{margin: 0; list-style: none; padding: 0;}
+        a{ text-decoration: none; color:inherit; }
+        *{ margin: 0; padding: 0; }
+        a img{ display:block; border:none;}
+        .clearfix:after{ content:""; display: block; clear: both;}
+        .fl-l{ float: left;}
+        .fl-r{ float: right;}
+
+        #title{width: 400px; margin-left: 50px; margin-top: 50px; font: 40px/70px "Arial Black"; height: 100px}
+        #tag{position: absolute; top:250px; left: 50px; font: 20px/30px "Arial Black"}
+
+        .sheets{display: flex; justify-content: space-around}
+        .sheets div{position: relative; width: 300px; height: 200px; display: flex; justify-content: center; align-content: center }
+        .sheets div p{font:26px/140px "Arial"; height: 50px}
+        .sheets div input{position: absolute;  top: 100px; left: 120px;}
+
+        .sheets input[type="text"]{
+            width: 50px;
+            height: 40px;
+            font: 20px/30px "Arial Black"; text-align: center;
+        }
+
+        input[type="button"], .nav{
+            background-color: #4CAF50;
+            border: none;
+            border-radius: 10px;
+            color: white;
+            padding: 15px 32px;
+            text-align: center;
+            text-decoration: none;
+            display: inline-block;
+            font-size: 16px;
+            margin: 4px 2px;
+            cursor: pointer;
+        }
+
+        #groups .group{margin-left: 50px; padding: 30px}
+        #groups .group .body div{margin-right: 30px}
+        #groups .group .body input{width: 200px;  height:30px; padding: 5px; text-align: center; font:20px/30px ""}
+        #groups .group .footer input{margin: 30px 30px 0 0}
+
+        .groupNo p{font:20px/30px "Arial Black"; text-align: center}
+
+        #nav{position: relative}
+        .nextButton{position: absolute; right: 10%}
+    </style>
+
+</head>
+
+<body>
+    <div id="title"></div>
+    <p id="tag">Group Name: </p>
+    <div class="sheets">
+        <!--add sheets here-->
+    </div>
+
+    <div id="groups">
+        <!--add group here-->
+        <div class="footer">
+            <input type="button" class="addbutton addattbutton" value="Add Group">
+        </div>
+    </div>
+    <div id="nav">
+        <button class="nav" onclick="enableinput()">Edit</button>
+        <button class="nav" onclick="saveconfig()">Save</button>
+        <button class="nav nextButton" onclick="next()">Proceed To Data Input</button>
+    </div>
+
+<script src="http://apps.bdimg.com/libs/jquery/2.1.4/jquery.js"></script>
+<script>
+
+    addvaluebutton = document.querySelectorAll(".group .footer .addbutton");
+    deleteValue = document.querySelectorAll(".group .footer .delvalbutton");
+    deleteAttribute = document.querySelectorAll(".group .footer .delattbutton");
+
+    addAttribute = document.querySelector(".addattbutton");
+
+    html =
+        `    <div class="body">
+                <div class="groupNo fl-l">
+                    <p>Group Number</p>
+                    <p></p>
+                </div>
+
+                <div class="groupName clearfix">
+                    <p>Group Name</p>
+                    <input type="text">
+                </div>
+            </div>
+            <div class="footer">
+                <input class="addbutton fl-l" type="button" value="Add Value">
+                <input class="delvalbutton fl-l" type="button" value="Delete Value">
+                <input class="delattbutton clearfix" type="button" value="Delete Group">
+            </div>
+            `;
+
+
+
+    loadSheet();
+
+
+
+    //add and remove value button, deleteAttributeButton Initialization
+    for(i=0; i<addvaluebutton.length; i++){
+        addRemoveValueEvent(addvaluebutton[i], deleteValue[i]);
+        deleteAttEvent(deleteAttribute[i])
+    }
+
+    //addAttribute button
+    addAttribute.addEventListener('click',function(){
+        let setting = this.parentNode.parentNode;
+        let div = document.createElement('div');
+        div.className = "group";
+        div.innerHTML = html;
+        div = setting.insertBefore(div, this.parentNode);
+        //auto add the group Number
+        leng = document.querySelectorAll(".body").length;
+        div.firstElementChild.firstElementChild.lastElementChild.innerHTML = leng;
+        //re-tie the events
+        let footer = div.lastElementChild;
+        addRemoveValueEvent(footer.firstElementChild, footer.firstElementChild.nextElementSibling);
+        deleteAttEvent(footer.lastElementChild);
+    });
+
+    var clickEvent = new Event('click');
+
+    function next(){
+        //save the current choice
+
+        window.location.href = "dataUpload.jsp"
+    }
+
+    function addRemoveValueEvent(add, remove){
+        //addEvent for add button
+        add.addEventListener('click', function() {
+                let curset = this.parentNode.parentNode;
+                let div = curset.firstElementChild.lastElementChild;
+                if (div.className.indexOf("groupName") === -1)
+                    div.className="value fl-l";
+                let body = div.parentNode;
+                let len = body.childElementCount;
+                newValue = document.createElement('div');
+                newValue.className = "value clearfix";
+                newValue.innerHTML = '<p>Sector '+(len - 1)+'</p><input type="text">';
+                body.appendChild(newValue)
+            }
+        );
+        //addEvent for remove button
+        remove.addEventListener('click', function(){
+                let curset = this.parentNode.parentNode;
+                let body = curset.firstElementChild;
+                let div = body.lastElementChild;
+                let len = body.childElementCount;
+                if (len<3) alert('No CellID Value already!');
+                else if (len === 3){
+                    body.removeChild(div)
+                }
+                else{
+                    div.previousElementSibling.className = "value clearfix";
+                    body.removeChild(div);
+                }
+            }
+        )
+    }
+
+    function deleteAttEvent(del){	
+        del.addEventListener('click', function(){
+                let set = this.parentNode.parentNode;
+                let setting = set.parentNode;
+                setting.removeChild(set);
+            }
+        )
+    }
+
+    function loadSheet(){
+        xml = new XMLHttpRequest();
+
+        xml.open("GET", "resource/sheetNames.json?cb=123" + Date.now(), true);
+
+        xml.onreadystatechange = function() {
+            if (xml.readyState !== 4)  { return; }
+            response = JSON.parse(xml.responseText);
+            console.log(response);
+            //initialization
+            loadSheetNames(response);
+            loadCellGroup()
+        };
+        xml.send()
+    }
+
+    function loadCellGroup(){
+        xml = new XMLHttpRequest();
+
+        xml.open("GET", "resource/cellGroup.json?cb=345" + Date.now(), true);
+        console.log(Date.now());
+
+        xml.onreadystatechange = function() {
+            if (xml.readyState !== 4)  { return; }
+            response = JSON.parse(xml.responseText);
+            console.log(response);
+            //initialization
+            loadCells(response);
+            disableinput();
+        };
+        xml.send();
+    }
+
+
+
+    sheetHTML = `<div><p>1</p><input type="text"></div>
+                 <div><p>2</p><input type="text"></div>`;
+
+    function loadCells(json){
+        //load Current Group Number
+        text = document.querySelectorAll(".order");
+        curCellGroupLen = json.group.length;
+        for(i=0; i<text.length; i++){
+            if (i < curCellGroupLen)
+                text[i].value = parseInt(json.group[i].matchTo) + 1;
+        }
+        //load cells
+        groups = document.getElementById("groups");
+
+        for (i=0; i<json.group.length; i++) {
+            addAttribute.dispatchEvent(clickEvent);
+        }
+        group = groups.firstElementChild;
+
+        for (i=0; i<json.group.length; i++) {
+            body = group.firstElementChild;
+            //group Number
+            groupNum = body.firstElementChild;
+            p = groupNum.lastElementChild;
+            p.innerHTML = i+1;
+            //group Name
+            groupNum.nextElementSibling.lastElementChild.value = json.group[i].groupName;
+            //cellGroup
+            for (j=0; j<json.group[i].cellGroup.length; j++) {
+                addbutton = group.lastElementChild.firstElementChild;
+                addbutton.dispatchEvent(clickEvent);
+                //body is modified, but body DOM object is dynamic
+                body.lastElementChild.lastElementChild.value = json.group[i].cellGroup[j];
+            }
+            group = group.nextElementSibling;
+        }
+    }
+
+    function loadSheetNames(json){
+        //title
+        title = document.getElementById("title");
+        title.innerHTML = json.excelName;
+
+        //sheetNames
+        sheetNum = json.cellSheetNames.length;
+        sheets = document.querySelector(".sheets");
+        for(i=0; i<sheetNum; i++){
+            div = document.createElement('div');
+            p = document.createElement('p');
+            p.innerHTML = json.cellSheetNames[i];
+            input = document.createElement('input');
+            input.className="order";
+            input.type = "text";
+            div.appendChild(p);
+            div.appendChild(input);
+            sheets.appendChild(div);
+        }
+    }
+
+    function saveconfig(){
+        //Get the data String
+        param = getOnPageData();
+        if (param === null) {
+            return;
+        }
+        console.log(param.setting);
+        //using ajax to pass to servelet
+        $.ajax({
+            type:"post",
+            url:"saveJsonServlet",
+            data:{"setting": param.setting, "location": "cellGroup"},
+            beforeSend:function(){},
+            success:function(data){
+                console.log(data);
+                if (data === "success")
+                    alert("The config has been updated!")
+            }
+        });
+        disableinput()
+    }
+
+    function getOnPageData(){
+        param = {};
+        bodys = document.querySelectorAll(".body");
+        inputs = document.querySelectorAll(".sheets input");
+
+        groupJson = {};
+        jsonArr = [];
+
+        console.log(inputs.length + ", " + bodys.length);
+
+        //check if the number of the sheets matched to the number of the cellGroup
+        if (inputs.length !== bodys.length) {
+            alert("Fail to save config. Please match the sheets and the cell group accordingly...");
+            return null;
+        }
+        //match to
+        for(i=0; i<inputs.length; i++){
+            groupItem = {};
+            groupItem.matchTo = (inputs[i].value - 1).toString();
+
+            div = bodys[i].firstElementChild;
+            //group name
+            div = div.nextElementSibling;
+            groupItem.groupName = div.lastElementChild.value;
+            //CellID values
+            valuelen = bodys[i].childElementCount - 2;
+            groupItem.cellGroup = [];
+            for(j=0; j<valuelen; j++){
+                div = div.nextElementSibling;
+                groupItem.cellGroup.push(div.lastElementChild.value)
+            }
+            jsonArr.push(groupItem);
+        }
+        groupJson.group = jsonArr;
+        param.setting = JSON.stringify(groupJson);
+        return param
+    }
+
+    function enableinput(){
+        console.log("Enter event");
+        inputs = document.querySelectorAll('input');
+        for(i=0;i<inputs.length;i++)
+            inputs[i].disabled = false;
+        console.log("changed")
+    }
+
+    function disableinput(){
+        inputs = document.querySelectorAll('input');
+        for(i=0;i<inputs.length;i++)
+            inputs[i].disabled = true
+    }
+
+
+</script>
+</body>
+</html>

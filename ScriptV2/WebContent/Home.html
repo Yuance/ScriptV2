@@ -1,0 +1,74 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="utf-8">
+    <meta name="Keywords" content="">
+    <meta name="Description" content="">
+    <meta name="Author" content="Yuance">
+    <meta name="Copyright" content="">
+    <title></title>
+    <style type="text/css">
+        body,dl,dd,dt,p,h1,h2,h3,h4,h5,h6{ margin: 0;}
+        ul,ol{margin: 0; list-style: none; padding: 0;}
+        a{ text-decoration: none; color:inherit; }
+        *{ margin: 0; padding: 0; }
+        a img{ display:block; border:none;}
+        .clearfix:after{ content:""; display: block; clear: both;}
+        .fl-l{ float: left;}
+        .fl-r{ float: right;}
+
+        div{position: relative; height: 600px; margin: auto 50px}
+        input{background-color: #4CAF50;
+            border: none;
+            border-radius: 10px;
+            color: white;
+            padding: 15px 32px;
+            text-align: center;
+            text-decoration: none;
+            display: inline-block;
+            font-size: 26px;
+            margin: 4px 2px;
+            cursor: pointer;}
+        #title{width: 600px; margin-left: 100px; margin-top: 100px; font: 60px/100px "Arial Black"; height: 100px}
+        #note{position: absolute; width: 200px; right:700px; top: 300px; font: 20px/50px ""; height: 50px; display: block}
+        div input:nth-last-child(3){position: absolute; right: 500px; bottom: 150px}
+        div input:nth-last-child(2){position: absolute; right: 500px; bottom: 50px}
+        div input:nth-last-child(1){position: absolute; right: 100px; bottom: 50px}
+
+    </style>
+
+</head>
+
+<body>
+
+    <div id="main">
+        <p id="title">Script Generator</p>
+        <!--<p id="note">Notice:</p>-->
+
+        <!-- <input class="input" type="button" onclick="defaultSetting.jsp" value="Default Setting"> -->
+        <input class="input" type="button" onclick="changeConfig()" value="Data Preparation If Template Update">
+        <input class="input" type="button" onclick="next()" value="Go To Template Upload">
+
+    </div>
+<script src="http://apps.bdimg.com/libs/jquery/2.1.4/jquery.js"></script>
+<script>
+	function changeConfig(){
+		window.location.href="siteLevel.jsp"
+	}
+	function next(){
+        $.ajax({
+            type:"post",
+            url:"delTempServlet",
+            data:{},
+            beforeSend:function(){},
+            success:function(data){
+                if (data === "success")
+                    window.location.href="currentTemplate.jsp";
+                else console.log("fail on initializing Template...")
+            }
+        });
+
+	}
+</script>
+</body>
+</html>

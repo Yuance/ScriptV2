@@ -1,0 +1,44 @@
+{"setting":[
+  {
+    "column": "7",
+    "attribute": "eNodeBID",
+    "determinants":[]
+  },
+  {
+    "column": "8",
+    "attribute": "LocalCellID",
+    "determinants":[]
+  },
+  {
+    "column": "63",
+    "attribute": "Lat.",
+    "determinants":[]
+  },
+  {
+    "column": "64",
+    "attribute": "Lon.",
+    "determinants":[]
+  },
+  {
+  	"column": "61",
+    "attribute": "coastal",
+    "determinants":["yes","no"]
+   },
+   {
+  	"column": "1",
+    "attribute": "SYS",
+    "determinants":["U9","U21"]
+   }  
+   ,
+   {
+  	"column": "62",
+    "attribute": "CA",
+    "determinants":["yes"]
+   },
+   {
+  	"column": "31",
+    "attribute": "ReferenceSignalPwr",
+    "determinants":["152","182"]
+   }  
+   ]
+}

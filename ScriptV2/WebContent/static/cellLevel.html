@@ -1,0 +1,227 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="utf-8">
+    <meta name="Keywords" content="">
+    <meta name="Description" content="">
+    <meta name="Author" content="Yuance">
+    <meta name="Copyright" content="">
+    <title>CellLevel Rule</title>
+    <style type="text/css">
+        body,dl,dd,dt,p,h1,h2,h3,h4,h5,h6{ margin: 0;}
+        ul,ol{margin: 0; list-style: none; padding: 0;}
+        a{ text-decoration: none; color:inherit; }
+        *{ margin: 0; padding: 0; }
+        a img{ display:block; border:none;}
+        .clearfix:after{content:""; display: block; clear: both;}
+        .fl-l{ float: left;}
+        .fl-r{ float: right;}
+
+        /*nav button*/
+        .nav,.addbutton, .delvalbutton, .delattbutton{background-color: #4CAF50;
+            border: none;
+            border-radius: 10px;
+            color: white;
+            padding: 15px 32px;
+            text-align: center;
+            text-decoration: none;
+            display: inline-block;
+            font-size: 26px;
+            margin: 4px 2px;
+            cursor: pointer;}
+
+        #main{position: relative; margin: auto 50px}
+        #title{width: 600px; margin-left: 100px; margin-top: 100px; font: 60px/100px "Arial Black"; height: 100px}
+        /*setting block*/
+        #setting .set{margin-left: 50px; padding: 30px}
+        #setting .set .body div{margin-right: 30px}
+        #setting .set .body p{font:20px/30px ""; padding: 3px;}
+        #setting .set .body input{width: 200px;  height:30px; padding: 5px; text-align: center; font:20px/30px ""}
+        #setting .set .footer input{margin: 30px 30px 0 0}
+
+
+        .addbutton, .delvalbutton, .delattbutton{padding: 10px 22px; font-size: 16px}
+
+        #main #nav{margin-left: 50px;}
+        #main #nav input{margin-left: 20px; margin-top: 100px}
+
+    </style>
+
+</head>
+
+
+<body>
+
+<div id="main">
+    <p id="title">SiteLevel Rule</p>
+
+    <!--Setting Block-->
+    <div id="setting">
+        <div class="set">
+            <div class="body">
+                <div class="col fl-l">
+                    <p>Column</p>
+                    <input type="text">
+                </div>
+                <div class="Attri clearfix">
+                    <p>Attribute</p>
+                    <input type="text">
+                </div>
+                <div class="value fl-l">
+                    <p>Value1</p>
+                    <input type="text">
+                </div>
+                <div class="value clearfix">
+                    <p>Value2</p>
+                    <input type="text">
+                </div>
+                <!--Add more value here-->
+            </div>
+            <div class="footer">
+                <input class="addbutton fl-l" type="button" value="Add Value">
+                <input class="delvalbutton fl-l" type="button" value="Delete Value">
+                <input class="delattbutton clearfix" type="button" value="Delete Attribute">
+            </div>
+        </div>
+
+        <div class="set">
+            <div class="body">
+                <div class="col fl-l">
+                    <p>Column</p>
+                    <input type="text">
+                </div>
+                <div class="Attri clearfix">
+                    <p>Attribute</p>
+                    <input type="text">
+                </div>
+                <div class="value fl-l">
+                    <p>Value1</p>
+                    <input type="text">
+                </div>
+                <div class="value clearfix">
+                    <p>Value2</p>
+                    <input type="text">
+                </div>
+                <!--Add more value here-->
+            </div>
+            <div class="footer">
+                <input class="addbutton fl-l" type="button" value="Add Value">
+                <input class="delvalbutton fl-l" type="button" value="Delete Value">
+                <input class="delattbutton clearfix" type="button" value="Delete Attribute">
+            </div>
+        </div>
+
+        <!--Add more sets here-->
+        <div class="footer">
+            <input type="button" class="addbutton addattbutton" value="Add Attribute">
+        </div>
+
+    </div>
+    <div id="nav">
+        <input class="nav" type="button" onclick="changeconfig()" value="Change">
+        <input class="nav" type="button" onclick="saveconfig()" value="Save">
+        <input class="nav" type="button" onclick="cellLevel.jsp" value="Next">
+    </div>
+
+
+</div>
+
+
+<script>
+    //dynamic selector
+    addvaluebutton = document.querySelectorAll(".set .footer .addbutton");
+    deleteValue = document.querySelectorAll(".set .footer .delvalbutton");
+    deleteAttribute = document.querySelectorAll(".set .footer .delattbutton");
+    addAttribute = document.querySelector(".addattbutton");
+    console.log(addvaluebutton+"-----"+deleteValue+"-----"+deleteAttribute+"-----"+addAttribute);
+
+    //    console.log(addvaluebutton.length);
+    //    console.log(deleteValue.length);
+
+    //html code for a set
+    html = `
+                <div class="body">
+                        <div class="col fl-l">
+                            <p>Column</p>
+                            <input type="text">
+                        </div>
+                        <div class="Attri clearfix">
+                            <p>Attribute</p>
+                            <input type="text">
+                        </div>
+                        <div class="value fl-l">
+                            <p>Value1</p>
+                            <input type="text">
+                        </div>
+                        <div class="value clearfix">
+                            <p>Value2</p>
+                            <input type="text">
+                        </div>
+                </div>
+                <div class="footer">
+                    <input class="addbutton fl-l" type="button" value="Add Value">
+                    <input class="delvalbutton fl-l" type="button" value="Delete Value">
+                    <input class="delattbutton clearfix" type="button" value="Delete Attribute">
+                </div>
+            `;
+
+
+    function addRemoveValueEvent(add, remove){
+        add.addEventListener('click', function() {
+            let curset = this.parentNode.parentNode;
+            let div = curset.firstElementChild.lastElementChild;
+            div.className = "value fl-l";
+            let body = div.parentNode;
+            let len = body.childElementCount;
+            newValue = document.createElement('div');
+            newValue.className = "value clearfix";
+            newValue.innerHTML = `<p>Value${len - 1}</p><input type="text">`;
+            body.appendChild(newValue)
+        });
+        remove.addEventListener('click', function(){
+            let curset = this.parentNode.parentNode;
+            let body = curset.firstElementChild;
+            let div = body.lastElementChild;
+            let len = body.childElementCount;
+            if (len<4) alert('At Least Two Values of One Attribute!');
+            else {
+                div.previousElementSibling.className="value clearfix";
+                body.removeChild(div);
+            }
+        })
+    }
+
+    function deleteAttEvent(del){
+        del.addEventListener('click', function(){
+            let set = this.parentNode.parentNode;
+            let setting = set.parentNode;
+            setting.removeChild(set);
+        })
+    }
+
+
+    //add and remove value button, deleteAttributeButton Initialization
+    for(let i=0; i<addvaluebutton.length; i++){
+        addRemoveValueEvent(addvaluebutton[i], deleteValue[i]);
+        deleteAttEvent(deleteAttribute[i])
+    }
+
+    //addAttribute button
+    addAttribute.addEventListener('click',function(){
+        let setting = this.parentNode;
+        let div = document.createElement('div');
+        div.className = "set";
+        div.innerHTML = html;
+        div = setting.insertBefore(div, setting.lastElementChild);
+        //re-tie the events
+        console.log(div);
+        let footer = div.lastElementChild;
+        console.log(footer);
+        addRemoveValueEvent(footer.firstElementChild, footer.firstElementChild.nextElementSibling);
+        deleteAttEvent(footer.lastElementChild);
+    });
+
+
+</script>
+</body>
+</html>
